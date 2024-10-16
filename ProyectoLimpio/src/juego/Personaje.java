@@ -16,11 +16,13 @@ public class Personaje {
 	double velocidad;
 	Entorno e;
 	boolean estaApoyado;
+	boolean estaSaltando;
+	private int contadorSalto;
 	public Personaje(double x,double y,Entorno ent) {
 		this.x = x;
 		this.y = y;
 		this.direccion = false;
-		this.escala = 0.23;
+		this.escala = 0.18;
 		this.velocidad = 1.0;
 		this.imagenDer = entorno.Herramientas.cargarImagen("imagenes/Totoro2.png");
 		this.imagenIzq = entorno.Herramientas.cargarImagen("imagenes/Totoro.png");
@@ -28,11 +30,20 @@ public class Personaje {
 		this.ancho = imagenDer.getWidth(null)*this.escala;
 		this.alto = imagenDer.getHeight(null)*this.escala;
 		this.estaApoyado = false;
-		
+		this.estaSaltando = false;
+		this.contadorSalto = 0;
 	}
 	public void movVertical() {
-		if(!this.estaApoyado) {
-			y++;
+		if(!this.estaApoyado && !estaSaltando) {
+			y+=2;
+		}
+		if(estaSaltando) {
+			y-=4;
+			contadorSalto ++;
+		}
+		if(contadorSalto == 45) {
+			estaSaltando = false;
+			contadorSalto = 0;
 		}
 	}
 	
@@ -73,6 +84,15 @@ public class Personaje {
 		}
 	}
 	
+	public void saltar() {
+		this.estaSaltando = true;
+		this.estaApoyado = true;
+	}
+	
+	public void cancelarSalto() {
+		estaSaltando = false;
+		contadorSalto = 0;
+	}
 	
 }
 

@@ -15,17 +15,19 @@ public class Isla {
 	double escala;
 	double velocidad;
 	Entorno e;
+	boolean estaApoyado;
 	
-	public Isla(double x,double y,Entorno e) {
+	public Isla(double x,double y,Entorno e, double d) {
 		this.x = x;
 		this.y = y;
 		this.e = e;
 		this.imagen = entorno.Herramientas.cargarImagen("imagenes/isla.png");
 		this.direccion = false;
-		this.escala = 0.25;
+		this.escala = 0.2;
 		this.velocidad = 1;
-		this.ancho = 120;
+		this.ancho = 110;
 		this.alto = 40;
+		this.estaApoyado = false;
 	}
 	
 	public double getBordeDer() {
