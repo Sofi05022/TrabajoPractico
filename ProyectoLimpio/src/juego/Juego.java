@@ -34,10 +34,11 @@ public class Juego extends InterfaceJuego
 				islas[k++] = new Isla((j)*this.entorno.ancho()/(i+1),100*i+50,entorno,1.0/(i+2));
 			}
 		}
-		int r = 0;
-		for(int i = 1;i <6;i++) {
-			tortuga[r++] = new Tortuga(this.entorno.ancho(),0,entorno);
-		}
+
+		    // Inicializar tortugas (evitando la primera isla)
+		    for (int i = 0; i < tortuga.length; i++) {
+		        tortuga[i] = new Tortuga(entorno, islas); // Se inicializa cada tortuga en una posición aleatoria
+		    }
 
 		// Inicia el juego!
 		this.entorno.iniciar();
@@ -55,7 +56,7 @@ public class Juego extends InterfaceJuego
 		// ...
 		chequearTeclas();
 		totoro.movVertical();
-		tortuga.movVertical();
+//		tortuga.movVertical();
 		if(pisandoIsla(totoro,islas)) {
 			this.totoro.estaApoyado = true;
 		}else {
@@ -64,19 +65,40 @@ public class Juego extends InterfaceJuego
 		if(tocaTecho(totoro,islas)) {
 			totoro.cancelarSalto();
 	}
-		if(pisandoIslaTortuga(tortuga,islas)) {
-			this.tortuga.estaApoyado = true;
-		}else {
-			this.tortuga.estaApoyado = false;
-		}
+		
+		 // Mover tortugas
+	    for (Tortuga t : tortuga) {
+	        if (t != null) {
+	            t.movVertical(); // Las tortugas caen hasta tocar una isla
+	            if (pisandoIslaTortuga(t, islas)) {
+	                t.estaApoyado = true;  // Si está pisando una isla, se apoya
+	                t.moverEnIsla(islas[getIslaApoyo(t)]); // Mover la tortuga sobre la isla correspondiente
+	            }
+	            t.mostrar(); // Mostrar la tortuga en pantalla
+	        }
+		
+
 //		 Dibujar
 		this.totoro.mostrar();
 		for(Isla i: this.islas) {
 			i.mostrar();
 		}
-		this.tortuga.mostrar();
-
 	}
+	}
+	private int getIslaApoyo(Tortuga t) {
+	    for (int i = 0; i < islas.length; i++) {
+	        Isla isla = islas[i];
+	        if (t.getBordeInf() >= isla.getBordeSup() && 
+	            t.getBordeInf() <= isla.getBordeSup() + 1 && 
+	            t.getBordeIzq() < isla.getBordeDer() && 
+	            t.getBordeDer() > isla.getBordeIzq()) {
+	            return i;  // Devuelve el índice de la isla sobre la cual está apoyada
+	        }
+	    }
+	    return -1;  // Si no está apoyada en ninguna isla
+	}
+
+	
 	
 	private void chequearTeclas() {
 		if(entorno.estaPresionada(entorno.TECLA_DERECHA)) {
