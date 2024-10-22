@@ -22,7 +22,7 @@ public class Personaje {
 		this.x = x;
 		this.y = y;
 		this.direccion = false;
-		this.escala = 0.2;
+		this.escala = 0.18;
 		this.velocidad = 1.0;
 		this.imagenDer = entorno.Herramientas.cargarImagen("imagenes/Totoro2.png");
 		this.imagenIzq = entorno.Herramientas.cargarImagen("imagenes/Totoro.png");
@@ -33,7 +33,7 @@ public class Personaje {
 		this.estaSaltando = false;
 		this.contadorSalto = 0;
 	}
-	public void movVertical(Isla[] islas) {
+	public void movVertical() {
 		if(!this.estaApoyado && !estaSaltando) {
 			y+=2;
 		}
@@ -41,7 +41,7 @@ public class Personaje {
 			y-=4;
 			contadorSalto ++;
 		}
-		if(contadorSalto == 30) {
+		if(contadorSalto == 45) {
 			estaSaltando = false;
 			contadorSalto = 0;
 		}
@@ -93,5 +93,6 @@ public class Personaje {
 		estaSaltando = false;
 		contadorSalto = 0;
 	}
+	
 }
 
