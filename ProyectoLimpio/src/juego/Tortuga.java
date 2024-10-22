@@ -39,7 +39,7 @@ public class Tortuga {
     }
     
     public void mostrar() {
-        this.e.dibujarRectangulo(x, y, ancho, alto, 0, Color.BLUE);
+        this.e.dibujarRectangulo(x, y, ancho, alto, 0, Color.RED);
     }
     
     public void movVertical() {

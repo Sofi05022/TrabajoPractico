@@ -1,6 +1,6 @@
 package juego;
 
-import java.awt.Color;
+
 import java.awt.Image;
 
 import entorno.Entorno;
@@ -23,18 +23,18 @@ public class Isla {
 		this.e = e;
 		this.imagen = entorno.Herramientas.cargarImagen("imagenes/isla.png");
 		this.direccion = false;
-		this.escala = 0.2;
+		this.escala = 0.21;
 		this.velocidad = 1;
-		this.ancho = 110;
-		this.alto = 40;
+		this.ancho = imagen.getWidth(null)*escala;
+		this.alto = imagen.getHeight(null)*escala;
 		this.estaApoyado = false;
 	}
 	
 	public double getBordeDer() {
-		return this.x+(this.ancho/2);
+		return x+(this.ancho/2);
 	}
 	public double getBordeIzq() {
-		return this.x-(this.ancho/2);
+		return x-(this.ancho/2);
 	}
 	public double getBordeSup() {
 		return y -(this.alto/2);
