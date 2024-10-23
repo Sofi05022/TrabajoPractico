@@ -1,6 +1,7 @@
 package juego;
 
 import java.awt.Color;
+import java.awt.Image;
 import java.util.Random;
 import entorno.Entorno;
 
@@ -14,11 +15,13 @@ public class Tortuga {
     double velocidad;
     Entorno e;
     boolean estaApoyado;
+    Image imagenDer;
+    Image imagenIzq;
     
     public Tortuga(Entorno ent, Isla[] islas) {
         this.e = ent; 
         this.y = 0; // Comienza desde el borde superior
-        
+        this.escala = 0.08;
         Random rand = new Random();
         boolean posicionValida = false;
         
@@ -26,21 +29,27 @@ public class Tortuga {
         while (!posicionValida) {
             this.x = rand.nextDouble() * this.e.ancho();
             Isla islaMasAlta = islas[0]; // Supone que la primera isla es la más alta
-            if (this.x < islaMasAlta.getBordeIzq() || this.x > islaMasAlta.getBordeDer()) {
+            if (this.x <= islaMasAlta.getBordeIzq()-20 || this.x >= islaMasAlta.getBordeDer()+20) {
                 posicionValida = true; // Si no cae sobre la isla más alta, la posición es válida
             }
         }
-        
-        this.ancho = 25; 
-        this.alto = 20;
+        this.imagenDer = entorno.Herramientas.cargarImagen("imagenes/Tortuga2.png");
+        this.imagenIzq = entorno.Herramientas.cargarImagen("imagenes/Tortuga.png");		
+        this.ancho = imagenDer.getWidth(null)*escala; 
+        this.alto = imagenIzq.getHeight(null)*escala;
         this.estaApoyado = false;
         this.velocidad = 1.0;
         this.direccion = rand.nextBoolean(); // Dirección inicial aleatoria
     }
     
     public void mostrar() {
-        this.e.dibujarRectangulo(x, y, ancho, alto, 0, Color.RED);
-    }
+    	if(direccion) {
+			this.e.dibujarImagen(imagenDer, x, y, 0, escala);
+		}
+		else {
+			this.e.dibujarImagen(imagenIzq, x, y, 0, escala);}
+
+		}
     
     public void movVertical() {
         if (!estaApoyado) {

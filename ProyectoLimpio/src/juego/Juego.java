@@ -25,29 +25,31 @@ public class Juego extends InterfaceJuego
 	Juego()
 	{
 		// Inicializa el objeto entorno
-		this.entorno = new Entorno(this, "Proyecto para TP", 1050, 700);
-		this.totoro = new Personaje(100,0,entorno);
+		this.entorno = new Entorno(this, "Proyecto para TP", 1150, 700);
+		this.totoro = new Personaje(666,250,entorno);
 		this.islas = new Isla[15];
 		this.tortuga = new Tortuga[5];
 		this.fondo = new Fondo("imagenes/fondo.jpg", entorno);
-		this.casita = new Casa(527,78,entorno);
+		this.casita = new Casa(580,78,entorno);
 		this.gnomos = new Gnomos[5];
 		// Inicializar lo que haga falta para el juego
 		// ...
+		
 		int k = 0;
-		  
-		int separacionVertical = 125 ;
-		for(int i=1;i<6;i++) {
-			for(int j=1;j<=i;j++) {
-				
-				double posicionX = (j)*this.entorno.ancho()/(i+1);
-				double posicionY = i*separacionVertical;
-				islas[k++] = new Isla(posicionX,posicionY,entorno,1.0/(i+2));
+		int separacionBase = 125;
+		int totalFilas = 5;
+		
+		for(int i = 1;i<=totalFilas;i++) {
+			for(int j = 1; j<=i;j++) {
+				double posicionX = (j)*(1200+i*45)/(i+1)-45*j;
+			
+				double posicionY = i*separacionBase;
+				islas[k++]=new Isla(posicionX,posicionY,entorno,1.0/(i/2));
 			}
 		}
-		
+//		
 		for (int i = 0; i < gnomos.length; i++) {
-            gnomos[i] = new Gnomos(600 + i * 10, 61, entorno);
+            gnomos[i] = new Gnomos(510 + i * 10, 61, entorno);
         }
 
 		    // Inicializar tortugas (evitando la primera isla)
@@ -74,7 +76,8 @@ public class Juego extends InterfaceJuego
 		fondo.dibujar();
 		casita.dibujarCasa(entorno);
         verificarGnomosPisandoIsla(gnomos, islas);
-//		tortuga.movVertical();
+        
+       
 		if(pisandoIsla(totoro,islas)) {
 			this.totoro.estaApoyado = true;
 		}else {

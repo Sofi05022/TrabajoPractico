@@ -23,7 +23,7 @@ public class Isla {
 		this.e = e;
 		this.imagen = entorno.Herramientas.cargarImagen("imagenes/isla.png");
 		this.direccion = false;
-		this.escala = 0.21;
+		this.escala = 0.25;
 		this.velocidad = 1;
 		this.ancho = imagen.getWidth(null)*escala;
 		this.alto = imagen.getHeight(null)*escala;

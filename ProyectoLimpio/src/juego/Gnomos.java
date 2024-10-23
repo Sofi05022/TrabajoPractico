@@ -15,6 +15,7 @@ public class Gnomos{
 	    Image imagenDer;
 	    Image imagenIzq;
 	    Entorno e;
+	    double velocidad;
 
 	    public Gnomos(double x, double y, Entorno ent) {
 	        this.x = x;
@@ -27,6 +28,7 @@ public class Gnomos{
 	        this.imagenIzq = entorno.Herramientas.cargarImagen("imagenes/gnomoIzq.png");
 	        this.ancho = imagenDer.getHeight(null) * tamanio;
 	        this.alto = imagenDer.getWidth(null) * tamanio;
+	        this.velocidad = 0.3;
 	    }
 
 	    public void cambiarDireccion() {
@@ -34,12 +36,12 @@ public class Gnomos{
 	    }
 
 	    public void movimientoGnomo() {
-	        if(this.direccion) {
-	            x --;
-	        } else {
-	            x ++;
-	        }
-	    }
+	    	 if (direccion) {
+	             x += velocidad; 
+	         } else {
+	             x -= velocidad; 
+	         }
+	             }
 
 	    public void gravedad() {
 	        if(!estaApoyado) {
