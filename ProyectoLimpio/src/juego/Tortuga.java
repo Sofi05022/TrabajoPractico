@@ -1,6 +1,5 @@
 package juego;
 
-import java.awt.Color;
 import java.awt.Image;
 import java.util.Random;
 import entorno.Entorno;
@@ -17,60 +16,130 @@ public class Tortuga {
     boolean estaApoyado;
     Image imagenDer;
     Image imagenIzq;
+    Image imagenHerida;
+    boolean herida;
     
+    private static final double VELOCIDAD_CAIDA_NORMAL = 1.0;
+    private static final double VELOCIDAD_CAIDA_HERIDA = 4.0;
+
     public Tortuga(Entorno ent, Isla[] islas) {
         this.e = ent; 
-        this.y = 0; // Comienza desde el borde superior
-        this.escala = 0.08;
+        this.y = 0;
+        this.escala = 0.15;
         Random rand = new Random();
-        boolean posicionValida = false;
-        
-        // Evitar caer sobre la isla más alta
-        while (!posicionValida) {
-            this.x = rand.nextDouble() * this.e.ancho();
-            Isla islaMasAlta = islas[0]; // Supone que la primera isla es la más alta
-            if (this.x <= islaMasAlta.getBordeIzq()-20 || this.x >= islaMasAlta.getBordeDer()+20) {
-                posicionValida = true; // Si no cae sobre la isla más alta, la posición es válida
-            }
-        }
-        this.imagenDer = entorno.Herramientas.cargarImagen("imagenes/Tortuga2.png");
-        this.imagenIzq = entorno.Herramientas.cargarImagen("imagenes/Tortuga.png");		
-        this.ancho = imagenDer.getWidth(null)*escala; 
-        this.alto = imagenIzq.getHeight(null)*escala;
+        this.imagenDer = entorno.Herramientas.cargarImagen("imagenes/Tortuga.png");
+        this.imagenIzq = entorno.Herramientas.cargarImagen("imagenes/Tortuga2.png");    
+        this.imagenHerida = entorno.Herramientas.cargarImagen("imagenes/TortugaHerida.png");
+        this.ancho = imagenDer.getWidth(null) * escala; 
+        this.alto = imagenIzq.getHeight(null) * escala;
         this.estaApoyado = false;
         this.velocidad = 1.0;
-        this.direccion = rand.nextBoolean(); // Dirección inicial aleatoria
+        this.direccion = rand.nextBoolean();
+        this.herida = false;
+        inicializarPosicion(islas);
     }
-    
-    public void mostrar() {
-    	if(direccion) {
-			this.e.dibujarImagen(imagenDer, x, y, 0, escala);
-		}
-		else {
-			this.e.dibujarImagen(imagenIzq, x, y, 0, escala);}
 
-		}
-    
-    public void movVertical() {
-        if (!estaApoyado) {
-            y += 1; // La tortuga cae
+    private void inicializarPosicion(Isla[] islas) {
+        Random rand = new Random();
+        Isla isla0 = islas[0];
+        double limiteIzquierdo = 100;
+        double limiteDerecho = e.ancho() - 100;
+
+        boolean posicionValida = false;
+        while (!posicionValida) {
+            this.x = rand.nextDouble() * (limiteDerecho - limiteIzquierdo) + limiteIzquierdo;
+            if (this.x <= isla0.getBordeIzq() - 20 || this.x >= isla0.getBordeDer() + 20) {
+                posicionValida = true;
+            }
         }
     }
-    
-    public void moverEnIsla(Isla isla) {
-        if (direccion) {
-            x += velocidad; // Mover hacia la derecha
+
+    public void mostrar() {
+        if (herida) {
+            this.e.dibujarImagen(imagenHerida, x, y, 0, escala);
+        } else if (direccion) {
+            this.e.dibujarImagen(imagenDer, x, y, 0, escala);
         } else {
-            x -= velocidad; // Mover hacia la izquierda
+            this.e.dibujarImagen(imagenIzq, x, y, 0, escala);
+        }
+    }
+
+    public void actualizar(Isla[] islas) {
+        if (herida) {
+            // Si está herida, simplemente cae y no verifica apoyo en islas
+            y += VELOCIDAD_CAIDA_HERIDA;
+        } else {
+            verificarApoyo(islas);
+            if (!estaApoyado) {
+                // Si no está apoyada, cae normalmente
+                y += VELOCIDAD_CAIDA_NORMAL;
+            } else {
+                // Si está apoyada, busca en qué isla está y se mueve sobre ella
+                for (Isla isla : islas) {
+                    if (estaEnIsla(isla)) {
+                        moverEnIsla(isla);
+                        break;
+                    }
+                }
+            }
+        }
+
+        // Verificar si salió de la pantalla
+        if (y > e.alto()) {
+            reiniciar();
+        }
+    }
+
+    private boolean estaEnIsla(Isla isla) {
+        return getBordeInf() >= isla.getBordeSup() && 
+               getBordeInf() <= isla.getBordeInf() &&
+               getBordeIzq() >= isla.getBordeIzq() && 
+               getBordeDer() <= isla.getBordeDer();
+    }
+
+    public void herir() {
+        herida = true;
+        estaApoyado = false; // Inmediatamente pierde el apoyo al ser herida
+    }
+
+    private void verificarApoyo(Isla[] islas) {
+        estaApoyado = false;
+        if (!herida) { // Solo verifica apoyo si no está herida
+            for (Isla isla : islas) {
+                if (estaEnIsla(isla)) {
+                    estaApoyado = true;
+                    y = isla.getBordeSup() - (alto / 2);
+                    break;
+                }
+            }
+        }
+    }
+
+    private void reiniciar() {
+        Random rand = new Random();
+        this.x = rand.nextDouble() * (e.ancho() - 200) + 100;
+        this.y = 0;
+        this.herida = false;
+        this.estaApoyado = false;
+        this.direccion = rand.nextBoolean();
+    }
+
+    private void moverEnIsla(Isla isla) {
+        if (direccion) {
+            x += velocidad;
+        } else {
+            x -= velocidad;
         }
         
-        // Cambiar de dirección si alcanza el borde de la isla
-        if (x <= isla.getBordeIzq() || x >= isla.getBordeDer()) {
-            direccion = !direccion; // Cambiar de dirección
+        if (x >= isla.getBordeDer() - (ancho / 2)) {
+            x = isla.getBordeDer() - (ancho / 2);
+            direccion = !direccion;
+        } else if (x <= isla.getBordeIzq() + (ancho / 2)) {
+            x = isla.getBordeIzq() + (ancho / 2);
+            direccion = !direccion;
         }
     }
     
-    // Métodos para obtener los bordes de la tortuga
     public double getBordeDer() {
         return this.x + (this.ancho / 2);
     }

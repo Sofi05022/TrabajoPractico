@@ -1,14 +1,11 @@
 package juego;
 
-
-import java.awt.Color;
-
-
 import entorno.Entorno;
 import entorno.InterfaceJuego;
 
 public class Juego extends InterfaceJuego
 {
+
 	// El objeto Entorno que controla el tiempo y otros
 	private Entorno entorno;
 	private Personaje totoro;
@@ -26,7 +23,7 @@ public class Juego extends InterfaceJuego
 	{
 		// Inicializa el objeto entorno
 		this.entorno = new Entorno(this, "Proyecto para TP", 1150, 700);
-		this.totoro = new Personaje(666,250,entorno);
+		this.totoro = new Personaje(140,250,entorno);
 		this.islas = new Isla[15];
 		this.tortuga = new Tortuga[5];
 		this.fondo = new Fondo("imagenes/fondo.jpg", entorno);
@@ -61,77 +58,86 @@ public class Juego extends InterfaceJuego
 		this.entorno.iniciar();
 	}
 
-	/**
-	 * Durante el juego, el método tick() será ejecutado en cada instante y 
-	 * por lo tanto es el método más importante de esta clase. Aquí se debe 
-	 * actualizar el estado interno del juego para simular el paso del tiempo 
-	 * (ver el enunciado del TP para mayor detalle).
-	 */
-	public void tick()
-	{
-		// Procesamiento de un instante de tiempo
-		// ...
-		chequearTeclas();
-		totoro.movVertical();
-		fondo.dibujar();
-		casita.dibujarCasa(entorno);
-        verificarGnomosPisandoIsla(gnomos, islas);
-        
-       
-		if(pisandoIsla(totoro,islas)) {
-			this.totoro.estaApoyado = true;
-		}else {
-			this.totoro.estaApoyado = false;
-		}
-		if(tocaTecho(totoro,islas)) {
-			totoro.cancelarSalto();
-	}
-        if(bola != null) {
-            bola.lanzarBola();
-            bola.dibujarBola(entorno);
-        }
-	
-		 // Mover tortugas
-	    for (Tortuga t : tortuga) {
-	        if (t != null) {
-	            t.movVertical(); // Las tortugas caen hasta tocar una isla
-	            if (pisandoIslaTortuga(t, islas)) {
-	                t.estaApoyado = true;  // Si está pisando una isla, se apoya
-	                t.moverEnIsla(islas[getIslaApoyo(t)]); // Mover la tortuga sobre la isla correspondiente
+		public void tick() {
+		    // Procesamiento de un instante de tiempo
+		    // ...
+		    chequearTeclas();
+		    totoro.movVertical();
+		    fondo.dibujar();
+		    casita.dibujarCasa(entorno);
+		    verificarGnomosPisandoIsla(gnomos, islas);
+
+		    if (pisandoIsla(totoro, islas)) {
+		        this.totoro.estaApoyado = true;
+		    } else {
+		        this.totoro.estaApoyado = false;
+		    }
+
+		    if (tocaTecho(totoro, islas)) {
+		        totoro.cancelarSalto();
+		    }
+
+		    // Si hay una bola, lanzarla y dibujarla
+		    if (bola != null) {
+		        bola.lanzarBola();
+		        bola.dibujarBola(entorno);
+		    }
+
+		    // Mover y actualizar tortugas
+	        for (Tortuga t : tortuga) {
+	            if (t != null) {
+	                t.actualizar(islas);  // Reemplaza la lógica anterior de movimiento
+	                t.mostrar();
 	            }
-	            t.mostrar(); // Mostrar la tortuga en pantalla
 	        }
+
+
+	     // Comprobar si la bola toca a alguna tortuga
+	        if (bola != null) {
+	            for (Tortuga t : tortuga) {
+	                if (t != null) {
+	                    if (bola.getX() >= t.getBordeIzq() && bola.getX() <= t.getBordeDer() &&
+	                        bola.getY() >= t.getBordeSup() && bola.getY() <= t.getBordeInf()) {
+	                        t.herir(); // Ya no necesitamos llamar a caer() explícitamente
+	                        bola = null;
+	                        break;
+	                    }
+	                }
+	            }
+	        }
+		    
+	     // Verificar colisión con Totoro
+	        for (Tortuga t : tortuga) {
+	            if (totoro.getBordeDer() > t.getBordeIzq() && totoro.getBordeIzq() < t.getBordeDer() &&
+	                totoro.getBordeInf() > t.getBordeSup() && totoro.getBordeSup() < t.getBordeInf()) {
+	                totoro.herir();
+	            }
+	        }
+		    // Actualizar la caída si Totoro está herido
+		    totoro.actualizarCaidaHerido();
+
+		    // Dibujar personajes e islas
+		    this.totoro.mostrar();
+		    for (Isla i : this.islas) {
+		        i.mostrar();
+		    }
+		    for (Gnomos gnomo : gnomos) {
+		        if (gnomo != null) {
+		            // Verificar colisión con Totoro
+		            if (totoro.getBordeDer() > gnomo.getBordeIzq() && 
+		                totoro.getBordeIzq() < gnomo.getBordeDer() &&
+		                totoro.getBordeInf() > gnomo.getBordeSup() && 
+		                totoro.getBordeSup() < gnomo.getBordeInf()) {
+		                gnomo.iniciarSalto();  // Inicia el salto cuando Totoro lo toca
+		            }
+		            
+		            gnomo.actualizar();  // Actualiza la posición y estado del gnomo
+		            gnomo.dibujarGnomo(entorno);
+		        }
+		    }
+		  }
 		
 
-
-		}
-//		 Dibujar
-		this.totoro.mostrar();
-		for(Isla i: this.islas) {
-			i.mostrar();   
-	}
-	    for (Gnomos gnomo : gnomos) {
-            if(gnomo!=null){
-                gnomo.dibujarGnomo(entorno);
-                gnomo.movimientoGnomo();
-                gnomo.gravedad();
-            }
-        }
-	}
-	private int getIslaApoyo(Tortuga t) {
-	    for (int i = 0; i < islas.length; i++) {
-	        Isla isla = islas[i];
-	        if (t.getBordeInf() >= isla.getBordeSup() && 
-	            t.getBordeInf() <= isla.getBordeSup() + 1 && 
-	            t.getBordeIzq() <= isla.getBordeDer() && 
-	            t.getBordeDer() >= isla.getBordeIzq()) {
-	            return i;  // Devuelve el índice de la isla sobre la cual está apoyada
-	        }
-	    }
-	    return -1;  // Si no está apoyada en ninguna isla
-	}
-
-	
 	
 	private void chequearTeclas() {
 		if(entorno.estaPresionada(entorno.TECLA_DERECHA) || entorno.estaPresionada('d')) {
@@ -178,22 +184,7 @@ public class Juego extends InterfaceJuego
 		 }
 		return false;
 	}
-	
-	private boolean pisandoIslaTortuga(Tortuga t,Isla[] i) {
-		 for (Isla isla : islas) {
-		        if (isla != null) {
-		            // Verifica si el personaje está sobre la isla actual
-		            if (t.getBordeInf() >= isla.getBordeSup() &&  // El borde inferior del personaje está sobre la isla
-		                t.getBordeInf() <= isla.getBordeSup() + 1 && // Pequeño margen
-		                t.getBordeIzq() < isla.getBordeDer() &&   // El borde izquierdo del personaje no está más allá del borde derecho de la isla
-		                t.getBordeDer() > isla.getBordeIzq()) {   // El borde derecho del personaje no está más allá del borde izquierdo de la isla
-		                
-		                return true; // Si está pisando una isla, regresa true
-		            }
-		        }
-		    }
-		    return false; // Si no está pisando ninguna isla, regresa false
-	}
+
 	private void verificarGnomosPisandoIsla(Gnomos[] gnomos, Isla[] islas) {
         for (Gnomos gnomo : gnomos) { 
             boolean estaApoyado = false;
@@ -210,6 +201,8 @@ public class Juego extends InterfaceJuego
             gnomo.estaApoyado = estaApoyado;
         }
     }
+	
+	
 	
     private boolean pisandoIsla(Gnomos g, Isla i) {
         return ( Math.abs(  g.getBordeInf() - i.getBordeSup()) < 1)

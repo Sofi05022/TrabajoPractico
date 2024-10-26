@@ -16,6 +16,11 @@ public class Gnomos{
 	    Image imagenIzq;
 	    Entorno e;
 	    double velocidad;
+	    
+	    private boolean saltando;
+	    private double velocidadSalto;
+	    private static final double VELOCIDAD_SALTO_INICIAL = -8.0;
+	    private static final double GRAVEDAD = 0.5;
 
 	    public Gnomos(double x, double y, Entorno ent) {
 	        this.x = x;
@@ -29,6 +34,7 @@ public class Gnomos{
 	        this.ancho = imagenDer.getHeight(null) * tamanio;
 	        this.alto = imagenDer.getWidth(null) * tamanio;
 	        this.velocidad = 0.3;
+	        this.velocidadSalto = 0;
 	    }
 
 	    public void cambiarDireccion() {
@@ -36,17 +42,52 @@ public class Gnomos{
 	    }
 
 	    public void movimientoGnomo() {
-	    	 if (direccion) {
-	             x += velocidad; 
-	         } else {
-	             x -= velocidad; 
-	         }
-	             }
+	        if (!saltando) {
+	            if (direccion) {
+	                x += velocidad;
+	            } else {
+	                x -= velocidad;
+	            }
+	        }
+	    }
+	    
+	    public void actualizar() {
+	        if (saltando) {
+	            // Aplicar movimiento de salto
+	            y += velocidadSalto;
+	            velocidadSalto += GRAVEDAD;
+	            
+	            // Si el gnomo sube lo suficiente, preparar para reaparecer en isla 0
+	            if (velocidadSalto > 0 && y > -50) {  // -50 es una altura arbitraria sobre la pantalla
+	                reaparecerEnIsla0();
+	            }
+	        } else {
+	            // Comportamiento normal
+	            movimientoGnomo();
+	            gravedad();
+	        }
+	    }
 
 	    public void gravedad() {
 	        if(!estaApoyado) {
 	            y += 2;
 	        }
+	    }
+	    
+	    public void iniciarSalto() {
+	        saltando = true;
+	        velocidadSalto = VELOCIDAD_SALTO_INICIAL;
+	        estaApoyado = false;
+	    }
+	    
+	    private void reaparecerEnIsla0() {
+	        // Coordenadas de la isla 0 (deberás ajustar estos valores según tu juego)
+	        x = 580;  // Posición X de la isla 0
+	        y = 125;  // Posición Y de la isla 0
+	        saltando = false;
+	        velocidadSalto = 0;
+	        estaApoyado = true;
+	        direccion = Math.random() < 0.5;
 	    }
 
 	    public void dibujarGnomo(Entorno e) {
