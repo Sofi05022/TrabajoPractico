@@ -8,7 +8,7 @@ public class Juego extends InterfaceJuego
 
 	// El objeto Entorno que controla el tiempo y otros
 	private Entorno entorno;
-	private Personaje totoro;
+	private Personaje pep;
 	private Isla[] islas;
 	private Tortuga[] tortuga;
 	private Poder bola;
@@ -22,31 +22,74 @@ public class Juego extends InterfaceJuego
 	Juego()
 	{
 		// Inicializa el objeto entorno
-		this.entorno = new Entorno(this, "Proyecto para TP", 1150, 700);
-		this.totoro = new Personaje(140,250,entorno);
+		this.entorno = new Entorno(this, "Proyecto para TP", 1000, 600);
+		this.pep = new Personaje(450,470,entorno);
 		this.islas = new Isla[15];
 		this.tortuga = new Tortuga[5];
 		this.fondo = new Fondo("imagenes/fondo.jpg", entorno);
-		this.casita = new Casa(580,78,entorno);
+		this.casita = new Casa(500,50,entorno);
 		this.gnomos = new Gnomos[5];
 		// Inicializar lo que haga falta para el juego
 		// ...
 		
-		int k = 0;
-		int separacionBase = 125;
-		int totalFilas = 5;
-		
-		for(int i = 1;i<=totalFilas;i++) {
-			for(int j = 1; j<=i;j++) {
-				double posicionX = (j)*(1200+i*45)/(i+1)-45*j;
-			
+		int t = 0; // se encarga de las primeras dos filas de islas.
+		int separacionBase = 95;
+		for (int i = 1; i <= 2; i++) {
+			for (int j = 1; j <= i; j++) {
+				double posicionX = (j)*(entorno.ancho())/(i+1);
+				if ( i == 2 && j == 1) {
+					posicionX = posicionX +50;
+				}
+				if (j == 2) {
+					posicionX = posicionX -50;
+				}
 				double posicionY = i*separacionBase;
-				islas[k++]=new Isla(posicionX,posicionY,entorno,1.0/(i/2));
+				islas[t++] = new Isla(posicionX,posicionY,entorno);
+			}
+		}
+
+		int separacionBase2 = 115; // se encarga del resto de filas.
+		
+		for(int i = 3;i<=5;i++) {
+			for(int j = 1; j<=i;j++) {
+				double posicionX = (j)*(entorno.ancho())/(i+1);
+				if(i == 3 && j == 1) {
+					posicionX = posicionX - 30;
+				}
+				if (i == 3 && j == 3) {
+					posicionX = posicionX + 30;
+				}
+				if (i == 4 && j == 1) {
+					posicionX = posicionX - 60;
+				}
+				if (i == 4 && j == 2) {
+					posicionX = posicionX - 20;
+				}
+				if (i == 4 && j == 3) {
+					posicionX = posicionX + 20;
+				}
+				if (i == 4 && j == 4) {
+					posicionX = posicionX + 60;
+				}
+				if (i == 5 && j == 1) {
+					posicionX -= 100;
+				}
+				if (i == 5 && j == 2) {
+					posicionX -= 50;
+				}
+				if (i == 5 && j == 4) {
+					posicionX += 50;
+				}
+				if (i == 5 && j == 5) {
+					posicionX += 100;
+				}
+				double posicionY = i*separacionBase2;
+				islas[t++]= new Isla(posicionX,posicionY,entorno);
 			}
 		}
 //		
 		for (int i = 0; i < gnomos.length; i++) {
-            gnomos[i] = new Gnomos(510 + i * 10, 61, entorno);
+            gnomos[i] = new Gnomos(455 + i * 10, 55, entorno);
         }
 
 		    // Inicializar tortugas (evitando la primera isla)
@@ -62,19 +105,19 @@ public class Juego extends InterfaceJuego
 		    // Procesamiento de un instante de tiempo
 		    // ...
 		    chequearTeclas();
-		    totoro.movVertical();
+		    pep.movVertical();
 		    fondo.dibujar();
 		    casita.dibujarCasa(entorno);
 		    verificarGnomosPisandoIsla(gnomos, islas);
 
-		    if (pisandoIsla(totoro, islas)) {
-		        this.totoro.estaApoyado = true;
+		    if (pisandoIsla(pep, islas)) {
+		        this.pep.estaApoyado = true;
 		    } else {
-		        this.totoro.estaApoyado = false;
+		        this.pep.estaApoyado = false;
 		    }
 
-		    if (tocaTecho(totoro, islas)) {
-		        totoro.cancelarSalto();
+		    if (tocaTecho(pep, islas)) {
+		        pep.cancelarSalto();
 		    }
 
 		    // Si hay una bola, lanzarla y dibujarla
@@ -98,59 +141,76 @@ public class Juego extends InterfaceJuego
 	                if (t != null) {
 	                    if (bola.getX() >= t.getBordeIzq() && bola.getX() <= t.getBordeDer() &&
 	                        bola.getY() >= t.getBordeSup() && bola.getY() <= t.getBordeInf()) {
-	                        t.herir(); // Ya no necesitamos llamar a caer() explícitamente
+	                        t.herir(); // Ya no necesitamos llamar a caer() explícitamene
 	                        bola = null;
 	                        break;
 	                    }
 	                }
 	            }
 	        }
+	     // Verifica si la bola sale del entorno
+	        if (bola != null && (bola.getX() < 0 || bola.getX() > 1000 || bola.getY() < 0 || bola.getY() > 600)) {
+	        	bola = null;
+	        }
 		    
 	     // Verificar colisión con Totoro
 	        for (Tortuga t : tortuga) {
-	            if (totoro.getBordeDer() > t.getBordeIzq() && totoro.getBordeIzq() < t.getBordeDer() &&
-	                totoro.getBordeInf() > t.getBordeSup() && totoro.getBordeSup() < t.getBordeInf()) {
-	                totoro.herir();
+	            if (pep.getBordeDer() > t.getBordeIzq() && pep.getBordeIzq() < t.getBordeDer() &&
+	                pep.getBordeInf() > t.getBordeSup() && pep.getBordeSup() < t.getBordeInf()) {
+	                pep.herir();
 	            }
 	        }
 		    // Actualizar la caída si Totoro está herido
-		    totoro.actualizarCaidaHerido();
+		    pep.actualizarCaidaHerido();
 
 		    // Dibujar personajes e islas
-		    this.totoro.mostrar();
+		    this.pep.mostrar();
 		    for (Isla i : this.islas) {
 		        i.mostrar();
 		    }
 		    for (Gnomos gnomo : gnomos) {
 		        if (gnomo != null) {
 		            // Verificar colisión con Totoro
-		            if (totoro.getBordeDer() > gnomo.getBordeIzq() && 
-		                totoro.getBordeIzq() < gnomo.getBordeDer() &&
-		                totoro.getBordeInf() > gnomo.getBordeSup() && 
-		                totoro.getBordeSup() < gnomo.getBordeInf()) {
+		            if (pep.getBordeDer() > gnomo.getBordeIzq() && 
+		                pep.getBordeIzq() < gnomo.getBordeDer() &&
+		                pep.getBordeInf() > gnomo.getBordeSup() && 
+		                pep.getBordeSup() < gnomo.getBordeInf()) {
 		                gnomo.iniciarSalto();  // Inicia el salto cuando Totoro lo toca
 		            }
-		            
+		           
 		            gnomo.actualizar();  // Actualiza la posición y estado del gnomo
 		            gnomo.dibujarGnomo(entorno);
 		        }
 		    }
-		  }
+		    for(Gnomos gnomo:gnomos) {
+		        if (gnomo != null) {
+		            for (Tortuga t : tortuga) {
+		                if (t.getBordeDer() >= gnomo.getBordeIzq() && 
+		                    t.getBordeIzq() <= gnomo.getBordeDer() &&
+		                    t.getBordeInf() >= gnomo.getBordeSup() && 
+		                    t.getBordeSup() <= gnomo.getBordeInf()) {
+		                    gnomo = null; 
+		                    break; // Salir del bucle de tortugas una vez encontrada la colisión
+		                }
+		            }
+		        }
+		    }
+		}
 		
 
 	
 	private void chequearTeclas() {
 		if(entorno.estaPresionada(entorno.TECLA_DERECHA) || entorno.estaPresionada('d')) {
-			this.totoro.mover(2);
+			this.pep.mover(2);
 		}
 		if(entorno.estaPresionada(entorno.TECLA_IZQUIERDA)||entorno.estaPresionada('a') ) {
-			this.totoro.mover(-2);
+			this.pep.mover(-2);
 		}
 		if(entorno.sePresiono(entorno.TECLA_ARRIBA) || entorno.sePresiono('w') ) {
-			totoro.saltar();
+			pep.saltar();
 		}
-		if(entorno.estaPresionado(entorno.BOTON_IZQUIERDO) || entorno.estaPresionada('c') && bola == null) {
-            bola = new Poder(totoro.getBordeDer(), totoro.getBordeSup() + 20 , entorno, totoro.direccion) ; 
+		if(entorno.estaPresionado(entorno.BOTON_IZQUIERDO) && bola == null || entorno.estaPresionada('c') && bola == null) {
+            bola = new Poder(pep.getBordeDer()-20, pep.getBordeSup() + 30 , entorno, pep.direccion) ; 
         }
 	}
 	
@@ -176,7 +236,7 @@ public class Juego extends InterfaceJuego
 		        	if(p.getBordeIzq() < i.getBordeDer() && 
 			                p.getBordeDer() > i.getBordeIzq()) {
 		        		
-		        		if (p.getBordeSup()<=i.getBordeInf()&&p.getBordeInf()>=i.getBordeSup()-2) {
+		        		if (p.getBordeSup()<=i.getBordeInf()&&p.getBordeInf()>=i.getBordeSup()-5) {
 		        			return true;
 		        		}
 		        		

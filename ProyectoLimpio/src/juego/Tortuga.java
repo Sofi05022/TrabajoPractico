@@ -38,18 +38,23 @@ public class Tortuga {
         this.herida = false;
         inicializarPosicion(islas);
     }
-
     private void inicializarPosicion(Isla[] islas) {
         Random rand = new Random();
-        Isla isla0 = islas[0];
-        double limiteIzquierdo = 100;
-        double limiteDerecho = e.ancho() - 100;
+        double limiteIzquierdo = 10;
+        double limiteDerecho = e.ancho() - 10;
 
         boolean posicionValida = false;
         while (!posicionValida) {
             this.x = rand.nextDouble() * (limiteDerecho - limiteIzquierdo) + limiteIzquierdo;
-            if (this.x <= isla0.getBordeIzq() - 20 || this.x >= isla0.getBordeDer() + 20) {
-                posicionValida = true;
+            this.y = -alto;
+            // Verificar que no caiga sobre las primeras tres islas
+            posicionValida = true;
+            for (int i = 0; i < 3; i++) {
+                Isla isla = islas[i];
+                if (this.x >= isla.getBordeIzq() && this.x <= isla.getBordeDer()) {
+                    posicionValida = false;
+                    break;
+                }
             }
         }
     }
@@ -86,7 +91,7 @@ public class Tortuga {
 
         // Verificar si salió de la pantalla
         if (y > e.alto()) {
-            reiniciar();
+            reiniciar(islas);
         }
     }
 
@@ -115,10 +120,28 @@ public class Tortuga {
         }
     }
 
-    private void reiniciar() {
+    private void reiniciar(Isla[] islas) {
         Random rand = new Random();
-        this.x = rand.nextDouble() * (e.ancho() - 200) + 100;
-        this.y = 0;
+        double limiteIzquierdo = 10;
+        double limiteDerecho = e.ancho() - 10;
+
+        boolean posicionValida = false;
+
+        while (!posicionValida) {
+            this.x = rand.nextDouble() * (limiteDerecho - limiteIzquierdo) + limiteIzquierdo;
+            this.y = -alto;
+
+            posicionValida = true;
+
+            for (int i = 0; i < 3; i++) {
+                Isla isla = islas[i];
+                if (this.x >= isla.getBordeIzq() && this.x <= isla.getBordeDer()) {
+                    posicionValida = false;
+                    break;
+                }
+            }
+        }
+
         this.herida = false;
         this.estaApoyado = false;
         this.direccion = rand.nextBoolean();

@@ -15,6 +15,7 @@ public class Poder {
     Image bolaIzq;
     Image bolaDer;
     Entorno e;
+    boolean fueraDePantalla;
 
     public Poder(double x, double y, Entorno ent, boolean direccion) {
         this.x = x;
@@ -27,6 +28,7 @@ public class Poder {
         this.ancho = bolaDer.getHeight(null) * tamanio;
         this.alto = bolaDer.getWidth(null) * tamanio;
         this.e = ent;
+        this.fueraDePantalla = false;
     }
 
     public void dibujarBola(Entorno e) {
@@ -34,6 +36,7 @@ public class Poder {
             e.dibujarImagen(bolaIzq, x, y, 0, tamanio);
         } else {
             e.dibujarImagen(bolaDer, x, y, 0, tamanio);
+       
         }
     }
 
@@ -44,6 +47,8 @@ public class Poder {
             x += velocidad;
         }
     }
+   
+    
 
     public double getX() {
         return x;

@@ -30,7 +30,7 @@ public class Personaje {
         this.posicionInicialX = x;  
         this.posicionInicialY = y;
         this.direccion = false;
-        this.escala = 0.18;
+        this.escala = 0.16;
         this.velocidad = 1.0;
         this.imagenDer = entorno.Herramientas.cargarImagen("imagenes/Totoro2.png");
         this.imagenIzq = entorno.Herramientas.cargarImagen("imagenes/Totoro.png");
@@ -78,7 +78,7 @@ public class Personaje {
 
 
 	public void movVertical() {
-		if(!this.estaApoyado && !estaSaltando) {
+		if(!estaApoyado && !estaSaltando) {
 			y+=2;
 		}
 		if(estaSaltando) {
@@ -121,13 +121,16 @@ public class Personaje {
 	}
 	
 	public void saltar() {
-		this.estaSaltando = true;
-		this.estaApoyado = true;
-	}
+		  if (estaApoyado) {  // Solo permite saltar si está apoyado
+		        estaSaltando = true;
+		        estaApoyado = false; // Una vez que inicia el salto, deja de estar apoyado
+		    }
+		}
 	
 	public void cancelarSalto() {
 		estaSaltando = false;
 		contadorSalto = 0;
+
 	}
 	
 }

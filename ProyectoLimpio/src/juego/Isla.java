@@ -17,13 +17,13 @@ public class Isla {
 	Entorno e;
 	boolean estaApoyado;
 	
-	public Isla(double x,double y,Entorno e, double d) {
+	public Isla(double x,double y,Entorno e) {
 		this.x = x;
 		this.y = y;
 		this.e = e;
-		this.imagen = entorno.Herramientas.cargarImagen("imagenes/isla.png");
+		this.imagen = entorno.Herramientas.cargarImagen("imagenes/islass.png");
 		this.direccion = false;
-		this.escala = 0.25;
+		this.escala = 0.23;
 		this.velocidad = 1;
 		this.ancho = imagen.getWidth(null)*escala;
 		this.alto = imagen.getHeight(null)*escala;

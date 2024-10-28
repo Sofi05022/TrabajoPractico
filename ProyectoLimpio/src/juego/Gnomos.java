@@ -25,7 +25,7 @@ public class Gnomos{
 	    public Gnomos(double x, double y, Entorno ent) {
 	        this.x = x;
 	        this.y = y;
-	        this.tamanio = 0.10;
+	        this.tamanio = 0.1;
 	        this.direccion = Math.random() < 0.5;
 	        this.estaApoyado = false;
 	        this.e = ent;
@@ -82,8 +82,8 @@ public class Gnomos{
 	    
 	    private void reaparecerEnIsla0() {
 	        // Coordenadas de la isla 0 (deberás ajustar estos valores según tu juego)
-	        x = 580;  // Posición X de la isla 0
-	        y = 125;  // Posición Y de la isla 0
+	        x = 455;  // Posición X de la isla 0
+	        y = 50;  // Posición Y de la isla 0
 	        saltando = false;
 	        velocidadSalto = 0;
 	        estaApoyado = true;
