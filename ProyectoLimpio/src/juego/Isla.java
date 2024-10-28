@@ -21,7 +21,7 @@ public class Isla {
 		this.x = x;
 		this.y = y;
 		this.e = e;
-		this.imagen = entorno.Herramientas.cargarImagen("imagenes/islass.png");
+		this.imagen = entorno.Herramientas.cargarImagen("imagenes/isla.png");
 		this.direccion = false;
 		this.escala = 0.23;
 		this.velocidad = 1;
