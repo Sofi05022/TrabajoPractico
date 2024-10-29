@@ -16,6 +16,7 @@ public class Gnomos{
 	    Image imagenIzq;
 	    Entorno e;
 	    double velocidad;
+	    boolean enColision;
 	    
 	    private boolean saltando;
 	    private double velocidadSalto;
@@ -35,6 +36,7 @@ public class Gnomos{
 	        this.alto = imagenDer.getWidth(null) * tamanio;
 	        this.velocidad = 0.3;
 	        this.velocidadSalto = 0;
+	        this.enColision = false;
 	    }
 
 	    public void cambiarDireccion() {
@@ -96,6 +98,13 @@ public class Gnomos{
 	        } else {
 	            e.dibujarImagen(imagenDer, x, y, 0, tamanio);
 	        }
+	    }
+	    public boolean estaEnColision() {
+	    	return enColision;
+	    }
+	    
+	    public void setEnColision(boolean enColision) {
+	    	this.enColision = enColision;
 	    }
 
 	    public double getBordeDer() {

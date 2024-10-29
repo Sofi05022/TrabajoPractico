@@ -1,6 +1,7 @@
 package juego;
 
 import entorno.Entorno;
+import java.awt.Color;
 import entorno.InterfaceJuego;
 
 public class Juego extends InterfaceJuego
@@ -15,6 +16,12 @@ public class Juego extends InterfaceJuego
 	private Fondo fondo;
 	private Casa casita;
 	private Gnomos[] gnomos;
+	private int gnomosRescatados;
+	private int gnomosPerdidos;
+	private int tortugasEliminadas;
+	private boolean finJuego;
+	private String mensajeFinal;
+	private boolean pepVivo;
 	
 	// Variables y métodos propios de cada grupo
 	// ...
@@ -28,7 +35,14 @@ public class Juego extends InterfaceJuego
 		this.tortuga = new Tortuga[5];
 		this.fondo = new Fondo("imagenes/fondo.jpg", entorno);
 		this.casita = new Casa(500,50,entorno);
-		this.gnomos = new Gnomos[5];
+		this.gnomos = new Gnomos[4];
+		this.gnomosRescatados = 0;
+		this.gnomosPerdidos = 0;
+		this.tortugasEliminadas = 0;
+		this.pepVivo = true;
+		this.mensajeFinal = "";
+		this.finJuego = false;
+		
 		// Inicializar lo que haga falta para el juego
 		// ...
 		
@@ -109,6 +123,8 @@ public class Juego extends InterfaceJuego
 		    fondo.dibujar();
 		    casita.dibujarCasa(entorno);
 		    verificarGnomosPisandoIsla(gnomos, islas);
+		    dibujarEstadisticas();
+		    
 
 		    if (pisandoIsla(pep, islas)) {
 		        this.pep.estaApoyado = true;
@@ -141,7 +157,8 @@ public class Juego extends InterfaceJuego
 	                if (t != null) {
 	                    if (bola.getX() >= t.getBordeIzq() && bola.getX() <= t.getBordeDer() &&
 	                        bola.getY() >= t.getBordeSup() && bola.getY() <= t.getBordeInf()) {
-	                        t.herir(); // Ya no necesitamos llamar a caer() explícitamene
+	                        t.herir(); // Ya no necesitamos llamar a caer() explícitamente
+	                        this.tortugasEliminadas ++;
 	                        bola = null;
 	                        break;
 	                    }
@@ -153,7 +170,7 @@ public class Juego extends InterfaceJuego
 	        	bola = null;
 	        }
 		    
-	     // Verificar colisión con Totoro
+	     // Verificar colisión entre Tortuga y  Totoro
 	        for (Tortuga t : tortuga) {
 	            if (pep.getBordeDer() > t.getBordeIzq() && pep.getBordeIzq() < t.getBordeDer() &&
 	                pep.getBordeInf() > t.getBordeSup() && pep.getBordeSup() < t.getBordeInf()) {
@@ -168,35 +185,60 @@ public class Juego extends InterfaceJuego
 		    for (Isla i : this.islas) {
 		        i.mostrar();
 		    }
+		    //colision entre gnomo y personaje
 		    for (Gnomos gnomo : gnomos) {
 		        if (gnomo != null) {
 		            // Verificar colisión con Totoro
-		            if (pep.getBordeDer() > gnomo.getBordeIzq() && 
-		                pep.getBordeIzq() < gnomo.getBordeDer() &&
-		                pep.getBordeInf() > gnomo.getBordeSup() && 
-		                pep.getBordeSup() < gnomo.getBordeInf()) {
-		                gnomo.iniciarSalto();  // Inicia el salto cuando Totoro lo toca
+		            boolean enColisionActual = pep.getBordeDer() > gnomo.getBordeIzq() && 
+		                                       pep.getBordeIzq() < gnomo.getBordeDer() &&
+		                                       pep.getBordeInf() > gnomo.getBordeSup() && 
+		                                       pep.getBordeSup() < gnomo.getBordeInf();
+
+		            if (enColisionActual && !gnomo.estaEnColision()) {
+		                gnomo.iniciarSalto(); // Inicia el salto cuando Totoro lo toca
+		                this.gnomosRescatados++; // Incrementa el contador al detectar una nueva colisión
+		                gnomo.setEnColision(true); // Marca al gnomo como en colisión
+		            } else if (!enColisionActual) {
+		                // Si ya no están en colisión, resetea la marca
+		                gnomo.setEnColision(false);
 		            }
-		           
+
 		            gnomo.actualizar();  // Actualiza la posición y estado del gnomo
-		            gnomo.dibujarGnomo(entorno);
+		            gnomo.dibujarGnomo(entorno);}
 		        }
-		    }
-		    for(Gnomos gnomo:gnomos) {
-		        if (gnomo != null) {
-		            for (Tortuga t : tortuga) {
-		                if (t.getBordeDer() >= gnomo.getBordeIzq() && 
-		                    t.getBordeIzq() <= gnomo.getBordeDer() &&
-		                    t.getBordeInf() >= gnomo.getBordeSup() && 
-		                    t.getBordeSup() <= gnomo.getBordeInf()) {
-		                    gnomo = null; 
-		                    break; // Salir del bucle de tortugas una vez encontrada la colisión
-		                }
-		            }
+		    //colision entre gnomo y tortuga
+		        for(Gnomos gnomo : gnomos) {
+		        	if(gnomo != null) {
+		        		for(Tortuga t: tortuga) {
+		        			if(t != null) {
+		        				boolean enColisionActual = gnomo.getBordeDer() > t.getBordeIzq() &&
+                                        gnomo.getBordeIzq() < t.getBordeDer() &&
+                                        gnomo.getBordeInf() > t.getBordeSup() &&
+                                        gnomo.getBordeSup() < t.getBordeInf();
+                                        
+                                if(enColisionActual && !gnomo.estaEnColision()) {
+                                	gnomo.iniciarSalto();
+                                	gnomo = null; // El gnomo se hace null al colisionar con una tortuga
+                                	this.gnomosPerdidos++; // se cuenta como un gnomo perdido
+                                	break; // Sale del bucle de tortugas una vez que colisiona
+
+		        			}
+		        		}
+
+		        	}
+		        		}
+		        	}
+		        
+		        //verifica si los gnomos caen al vacio y los cuenta perdidos
+		        for (Gnomos gnomo : gnomos) {
+		        	if (gnomo != null && gnomo.getBordeSup() > 670) {
+		        		gnomo.iniciarSalto();
+		        		gnomo = null;
+		        		this.gnomosPerdidos ++;
+		        		
+		        	}
 		        }
-		    }
-		}
-		
+	}
 
 	
 	private void chequearTeclas() {
@@ -269,6 +311,21 @@ public class Juego extends InterfaceJuego
                 && (g.getBordeIzq() < i.getBordeDer())
                 && (g.getBordeDer() > i.getBordeIzq());
     }
+    
+ 
+    
+    
+    private void dibujarEstadisticas() {
+        double TotalSeg = (entorno.tiempo() / 1000.0);
+        int minutos = (int) (TotalSeg / 60);
+        int segundos = (int) (TotalSeg % 60);
+        
+        entorno.cambiarFont("Arial", 18, Color.BLACK);
+        entorno.escribirTexto("Tiempo: " + minutos + ":" + segundos, 10, 30);
+        entorno.escribirTexto("Gnomos Rescatados: " + gnomosRescatados, 10, 50);
+        entorno.escribirTexto("Gnomos Perdidos: " + gnomosPerdidos, 10, 70);
+        entorno.escribirTexto("Tortugas Eliminadas: " + tortugasEliminadas, 10, 90);
+        }
 
 	@SuppressWarnings("unused")
 	public static void main(String[] args)
