@@ -33,7 +33,7 @@ public class Tortuga {
         this.ancho = imagenDer.getWidth(null) * escala; 
         this.alto = imagenIzq.getHeight(null) * escala;
         this.estaApoyado = false;
-        this.velocidad = 1.0;
+        this.velocidad = 0.5;
         this.direccion = rand.nextBoolean();
         this.herida = false;
         inicializarPosicion(islas);

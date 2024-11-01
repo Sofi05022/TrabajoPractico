@@ -53,8 +53,8 @@ public class Juego extends InterfaceJuego
 	            // Mostrar mensaje de finalización del juego o detener otras acciones
 	            double rectX = entorno.ancho() / 2;
 	            double rectY = entorno.alto() / 2;
-	            double rectAncho = 400;
-	            double rectAlto = 300; 
+	            double rectAncho = 1000;
+	            double rectAlto = 600; 
 	            fondo.dibujar();
 	            casita.dibujarCasa(entorno);
 	            for (Gnomos gnomo : gnomos) {
@@ -73,11 +73,11 @@ public class Juego extends InterfaceJuego
 	            if (pepVivo) {
 	                pep.mostrar();
 	        }
-	        entorno.dibujarRectangulo(rectX, rectY, rectAncho, rectAlto, 0, Color.WHITE);
-	        entorno.cambiarFont("Arial", 26, Color.BLACK);
+	        entorno.dibujarRectangulo(rectX, rectY, rectAncho, rectAlto, 0, Color.BLACK);
+	        entorno.cambiarFont("Arial", 26, Color.BLUE);
 	        entorno.escribirTexto("¡Juego Terminado!", rectX-130,rectY-50);
-	        entorno.escribirTexto(mensajeFinal,rectX-130,rectY);
-	        entorno.escribirTexto("Presione R para volver a jugar",rectX-160,rectY+50);
+	        entorno.escribirTexto(mensajeFinal,rectX-150,rectY);
+	        entorno.escribirTexto("Presione R para volver a jugar",rectX-170,rectY+50);
 
 
 	        if(entorno.sePresiono('r')){
@@ -139,15 +139,6 @@ public class Juego extends InterfaceJuego
 	        	bola = null;
 	        }
 		    
-	     // Verificar colisión entre Tortuga y  Totoro
-//	        for (Tortuga t : tortuga) {
-//	            if (pep.getBordeDer() > t.getBordeIzq() && pep.getBordeIzq() < t.getBordeDer() &&
-//	                pep.getBordeInf() > t.getBordeSup() && pep.getBordeSup() < t.getBordeInf()) {
-//	                //pep.herir();
-//	            }
-//	        }
-		    // Actualizar la caída si Totoro está herido
-		    //pep.actualizarCaidaHerido();
 
 		    // Dibujar personajes e islas
 		    this.pep.mostrar();
@@ -348,10 +339,10 @@ public class Juego extends InterfaceJuego
 			for (int j = 1; j <= i; j++) {
 				double posicionX = (j)*(entorno.ancho())/(i+1);
 				if ( i == 2 && j == 1) {
-					posicionX = posicionX +50;
+					posicionX = posicionX +70;
 				}
 				if (j == 2) {
-					posicionX = posicionX -50;
+					posicionX = posicionX -70;
 				}
 				double posicionY = i*separacionBase;
 				islas[t++] = new Isla(posicionX,posicionY,entorno);
@@ -373,10 +364,10 @@ public class Juego extends InterfaceJuego
 					posicionX = posicionX - 60;
 				}
 				if (i == 4 && j == 2) {
-					posicionX = posicionX - 20;
+					posicionX = posicionX - 30;
 				}
 				if (i == 4 && j == 3) {
-					posicionX = posicionX + 20;
+					posicionX = posicionX + 40;
 				}
 				if (i == 4 && j == 4) {
 					posicionX = posicionX + 60;

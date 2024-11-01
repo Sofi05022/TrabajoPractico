@@ -30,8 +30,8 @@ public class Gnomos{
 	        this.direccion = Math.random() < 0.5;
 	        this.estaApoyado = false;
 	        this.e = ent;
-	        this.imagenDer = entorno.Herramientas.cargarImagen("imagenes/gnomoDer.png");
-	        this.imagenIzq = entorno.Herramientas.cargarImagen("imagenes/gnomoIzq.png");
+	        this.imagenDer = entorno.Herramientas.cargarImagen("imagenes/gnomoIzq.png");
+	        this.imagenIzq = entorno.Herramientas.cargarImagen("imagenes/gnomoDer.png");
 	        this.ancho = imagenDer.getHeight(null) * tamanio;
 	        this.alto = imagenDer.getWidth(null) * tamanio;
 	        this.velocidad = 0.3;
