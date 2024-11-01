@@ -40,41 +40,41 @@ public class Personaje {
         this.alto = imagenDer.getHeight(null) * this.escala;
         this.estaApoyado = false;
         this.estaSaltando = false;
-        this.herido = false;  // Inicialmente no está herido
+        //this.herido = false;  // Inicialmente no está herido
         this.contadorSalto = 0;
     }
     
     
     public void mostrar() {
-		if (herido) {
-            this.e.dibujarImagen(imagenHerido, x, y, 0, escala);  // Si está herido, se muestra la imagen de herido
-        } else if (direccion) {
+		//if (herido) {
+           // this.e.dibujarImagen(imagenHerido, x, y, 0, escala);  // Si está herido, se muestra la imagen de herido
+         if (direccion) {
             this.e.dibujarImagen(imagenDer, x, y, 0, escala);
         } else {
             this.e.dibujarImagen(imagenIzq, x, y, 0, escala);
         }
 	}
 
-    public void herir() {
-        herido = true;
-    }
+//    public void herir() {
+//        herido = true;
+//    }
 
-    public void actualizarCaidaHerido() {
-        if (herido) {
-            y += 4;  // El personaje cae rápidamente
-            if (y > e.alto() + alto) {
-                // Cuando sale de la pantalla, reiniciamos el personaje
-                reiniciar();
-            }
-        }
-    }
+//    public void actualizarCaidaHerido() {
+//        if (herido) {
+//            y += 4;  // El personaje cae rápidamente
+//            if (y > e.alto() + alto) {
+//                // Cuando sale de la pantalla, reiniciamos el personaje
+//                reiniciar();
+//            }
+//        }
+//    }
 
-    public void reiniciar() {
-        herido = false;
-        x = posicionInicialX;  // Reaparece en la posición inicial
-        y = posicionInicialY;
-        direccion = false;
-    }
+//    public void reiniciar() {
+//        herido = false;
+//        x = posicionInicialX;  // Reaparece en la posición inicial
+//        y = posicionInicialY;
+//        direccion = false;
+//    }
 
 
 	public void movVertical() {

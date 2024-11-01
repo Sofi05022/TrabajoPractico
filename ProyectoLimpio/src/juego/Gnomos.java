@@ -83,7 +83,7 @@ public class Gnomos{
 	    }
 	    
 	    private void reaparecerEnIsla0() {
-	        // Coordenadas de la isla 0 (deberás ajustar estos valores según tu juego)
+	        // Coordenadas de la isla 0 
 	        x = 455;  // Posición X de la isla 0
 	        y = 50;  // Posición Y de la isla 0
 	        saltando = false;
