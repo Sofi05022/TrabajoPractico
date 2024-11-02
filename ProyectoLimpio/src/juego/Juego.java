@@ -22,6 +22,8 @@ public class Juego extends InterfaceJuego
 	private boolean finJuego;
 	private String mensajeFinal;
 	private boolean pepVivo;
+	private int TiempoInicial;
+	private boolean juegoTerminado;
 	
 	// Variables y métodos propios de cada grupo
 	// ...
@@ -30,7 +32,7 @@ public class Juego extends InterfaceJuego
 	{
 		// Inicializa el objeto entorno
 		this.entorno = new Entorno(this, "Proyecto para TP", 1000, 600);
-		
+		this.juegoTerminado= false;
 		
 		// Inicializar lo que haga falta para el juego
 		// ...
@@ -306,7 +308,7 @@ public class Juego extends InterfaceJuego
     
     
     private void dibujarEstadisticas() {
-        double TotalSeg = (entorno.tiempo() / 1000.0);
+        double TotalSeg = ((entorno.tiempo()-TiempoInicial )/ 1000.0);
         int minutos = (int) (TotalSeg / 60);
         int segundos = (int) (TotalSeg % 60);
         
@@ -331,6 +333,8 @@ public class Juego extends InterfaceJuego
 		this.pepVivo = true;
 		this.mensajeFinal = "";
 		this.finJuego = false;
+		this.TiempoInicial = entorno.tiempo();
+		resetearTiempo();
 		
 		
 		int t = 0; // se encarga de las primeras dos filas de islas.
@@ -430,8 +434,9 @@ public class Juego extends InterfaceJuego
 
     }
     
-    
-    
+   private void resetearTiempo() {
+	   TiempoInicial = entorno.tiempo();
+   }
     
 
 	@SuppressWarnings("unused")
