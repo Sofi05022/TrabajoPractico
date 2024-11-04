@@ -85,7 +85,7 @@ public class Juego extends InterfaceJuego
 	            resetearTiempo();
 
 	        }
-	        return; // Detiene el procesamiento adicional
+	        return;
 
 	        }
 		    chequearTeclas();
@@ -115,7 +115,7 @@ public class Juego extends InterfaceJuego
 		    // Mover y actualizar tortugas
 	        for (Tortuga t : tortuga) {
 	            if (t != null) {
-	                t.actualizar(islas);  // Reemplaza la lógica anterior de movimiento
+	                t.actualizar(islas);  
 	                t.mostrar();
 	            }
 	        }
@@ -127,7 +127,7 @@ public class Juego extends InterfaceJuego
 	                if (t != null) {
 	                    if (bola.getX() >= t.getBordeIzq() && bola.getX() <= t.getBordeDer() &&
 	                        bola.getY() >= t.getBordeSup() && bola.getY() <= t.getBordeInf()) {
-	                        t.herir(); // Ya no necesitamos llamar a caer() explícitamente
+	                        t.herir(); // 
 	                        this.tortugasEliminadas ++;
 	                        bola = null;
 	                        break;
@@ -166,9 +166,9 @@ public class Juego extends InterfaceJuego
                               pep.getBordeSup() < gnomos[i].getBordeInf();
 
                               if (enColisionActual && !gnomos[i].estaEnColision()) {
-                            	  	gnomos[i].iniciarSalto(); // Inicia el salto cuando Totoro lo toca
-                            	  	this.gnomosRescatados++; // Incrementa el contador al detectar una nueva colisión
-                            	  	gnomos[i].setEnColision(true); // Marca al gnomo como en colisión
+                            	  	gnomos[i].iniciarSalto(); 
+                            	  	this.gnomosRescatados++; 
+                            	  	gnomos[i].setEnColision(true); 
                               } else if (!enColisionActual) {
                             	  // Si ya no están en colisión, resetea la marca
                             	  gnomos[i].setEnColision(false);
@@ -192,10 +192,10 @@ public class Juego extends InterfaceJuego
 
 		                    if (enColisionActual) {
 		                        gnomo.iniciarSalto();
-		                        gnomo.setEnColision(true); // Marca al gnomo en colisión
-		                        this.gnomosPerdidos++; // Incrementa el contador
-		                        gnomos[i] = null; // El gnomo se hace null al colisionar con una tortuga
-		                        break; // Sale del bucle de tortugas una vez que colisiona. 
+		                        gnomo.setEnColision(true); 
+		                        this.gnomosPerdidos++; 
+		                        gnomos[i] = null; 
+		                        break;  
 		                    }
 		                }
 		            }
@@ -248,7 +248,7 @@ public class Juego extends InterfaceJuego
 
 	    private boolean pisandoIsla(Personaje p, Isla i) {
 	        return ( Math.abs(  p.getBordeInf() - i.getBordeSup()) < 4)
-	                && (p.getBordeIzq() < i.getBordeDer()-10)
+	                && (p.getBordeIzq() < i.getBordeDer()-15)
 	                && (p.getBordeDer() > i.getBordeIzq()+15);
 	    }
 		
@@ -273,7 +273,7 @@ public class Juego extends InterfaceJuego
             	
                 if (gnomo != null && pisandoIsla(gnomo, isla)) {
                     estaApoyado = true;
-                    break; // Si está pisando una isla, no necesitamos seguir buscando
+                    break; 
                 }
             }
 
@@ -400,7 +400,7 @@ public class Juego extends InterfaceJuego
 		
 		// Inicializar tortugas (evitando la primera isla)
 	    for (int i = 0; i < tortuga.length; i++) {
-	        tortuga[i] = new Tortuga(entorno, islas); // Se inicializa cada tortuga en una posición aleatoria
+	        tortuga[i] = new Tortuga(entorno, islas); 
 	    }
     }
     

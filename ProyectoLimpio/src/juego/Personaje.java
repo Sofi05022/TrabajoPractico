@@ -21,14 +21,10 @@ public class Personaje {
     boolean estaSaltando;
     boolean herido;  
     private int contadorSalto;
-    private double posicionInicialX;
-    private double posicionInicialY;
 
     public Personaje(double x, double y, Entorno ent) {
         this.x = x;
         this.y = y;
-        this.posicionInicialX = x;  
-        this.posicionInicialY = y;
         this.direccion = false;
         this.escala = 0.16;
         this.velocidad = 1.0;
@@ -40,41 +36,17 @@ public class Personaje {
         this.alto = imagenDer.getHeight(null) * this.escala;
         this.estaApoyado = false;
         this.estaSaltando = false;
-        //this.herido = false;  // Inicialmente no está herido
         this.contadorSalto = 0;
     }
     
     
     public void mostrar() {
-		//if (herido) {
-           // this.e.dibujarImagen(imagenHerido, x, y, 0, escala);  // Si está herido, se muestra la imagen de herido
          if (direccion) {
             this.e.dibujarImagen(imagenDer, x, y, 0, escala);
         } else {
             this.e.dibujarImagen(imagenIzq, x, y, 0, escala);
         }
 	}
-
-//    public void herir() {
-//        herido = true;
-//    }
-
-//    public void actualizarCaidaHerido() {
-//        if (herido) {
-//            y += 4;  // El personaje cae rápidamente
-//            if (y > e.alto() + alto) {
-//                // Cuando sale de la pantalla, reiniciamos el personaje
-//                reiniciar();
-//            }
-//        }
-//    }
-
-//    public void reiniciar() {
-//        herido = false;
-//        x = posicionInicialX;  // Reaparece en la posición inicial
-//        y = posicionInicialY;
-//        direccion = false;
-//    }
 
 
 	public void movVertical() {
@@ -121,9 +93,9 @@ public class Personaje {
 	}
 	
 	public void saltar() {
-		  if (estaApoyado) {  // Solo permite saltar si está apoyado
+		  if (estaApoyado) { 
 		        estaSaltando = true;
-		        estaApoyado = false; // Una vez que inicia el salto, deja de estar apoyado
+		        estaApoyado = false; 
 		    }
 		}
 	

@@ -33,7 +33,7 @@ public class Tortuga {
         this.ancho = imagenDer.getWidth(null) * escala; 
         this.alto = imagenIzq.getHeight(null) * escala;
         this.estaApoyado = false;
-        this.velocidad = 0.5;
+        this.velocidad = 0.4;
         this.direccion = rand.nextBoolean();
         this.herida = false;
         inicializarPosicion(islas);
@@ -51,7 +51,7 @@ public class Tortuga {
             posicionValida = true;
             for (int i = 0; i < 3; i++) {
                 Isla isla = islas[i];
-                if (this.x >= isla.getBordeIzq() && this.x <= isla.getBordeDer()) {
+                if (this.x > isla.getBordeIzq()-20 && this.x < isla.getBordeDer()+20) {
                     posicionValida = false;
                     break;
                 }
@@ -96,20 +96,19 @@ public class Tortuga {
     }
 
     private boolean estaEnIsla(Isla isla) {
-        return getBordeInf() >= isla.getBordeSup() && 
-               getBordeInf() <= isla.getBordeInf() &&
-               getBordeIzq() >= isla.getBordeIzq() && 
-               getBordeDer() <= isla.getBordeDer();
+        return ( Math.abs(getBordeInf() - isla.getBordeSup()) < 1)
+                && (getBordeIzq() < isla.getBordeDer()-15)
+                && (getBordeDer() > isla.getBordeIzq()+15);
     }
 
     public void herir() {
         herida = true;
-        estaApoyado = false; // Inmediatamente pierde el apoyo al ser herida
+        estaApoyado = false; 
     }
 
     private void verificarApoyo(Isla[] islas) {
         estaApoyado = false;
-        if (!herida) { // Solo verifica apoyo si no está herida
+        if (!herida) { 
             for (Isla isla : islas) {
                 if (estaEnIsla(isla)) {
                     estaApoyado = true;
@@ -135,7 +134,7 @@ public class Tortuga {
 
             for (int i = 0; i < 3; i++) {
                 Isla isla = islas[i];
-                if (this.x >= isla.getBordeIzq() && this.x <= isla.getBordeDer()) {
+                if (this.x >= isla.getBordeIzq()-20 && this.x <= isla.getBordeDer()+20) {
                     posicionValida = false;
                     break;
                 }

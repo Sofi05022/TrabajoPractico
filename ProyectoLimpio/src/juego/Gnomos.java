@@ -60,7 +60,7 @@ public class Gnomos{
 	            velocidadSalto += GRAVEDAD;
 	            
 	            // Si el gnomo sube lo suficiente, preparar para reaparecer en isla 0
-	            if (velocidadSalto > 0 && y > -50) {  // -50 es una altura arbitraria sobre la pantalla
+	            if (velocidadSalto > 0 && y > -50) { 
 	                reaparecerEnIsla0();
 	            }
 	        } else {
@@ -84,8 +84,8 @@ public class Gnomos{
 	    
 	    private void reaparecerEnIsla0() {
 	        // Coordenadas de la isla 0 
-	        x = 455;  // Posición X de la isla 0
-	        y = 50;  // Posición Y de la isla 0
+	        x = 455;  
+	        y = 50; 
 	        saltando = false;
 	        velocidadSalto = 0;
 	        estaApoyado = true;
