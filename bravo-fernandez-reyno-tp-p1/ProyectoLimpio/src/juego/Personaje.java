@@ -12,8 +12,7 @@ public class Personaje {
     double alto;
     boolean direccion;
     Image imagenDer;
-    Image imagenIzq;
-    Image imagenHerido;  
+    Image imagenIzq;  
     double escala;
     double velocidad;
     Entorno e;
@@ -30,7 +29,6 @@ public class Personaje {
         this.velocidad = 1.0;
         this.imagenDer = entorno.Herramientas.cargarImagen("imagenes/Totoro2.png");
         this.imagenIzq = entorno.Herramientas.cargarImagen("imagenes/Totoro.png");
-        this.imagenHerido = entorno.Herramientas.cargarImagen("imagenes/TotoroHerido.png");  // Imagen de herido
         this.e = ent;
         this.ancho = imagenDer.getWidth(null) * this.escala;
         this.alto = imagenDer.getHeight(null) * this.escala;
